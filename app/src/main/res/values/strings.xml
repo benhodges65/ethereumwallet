@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ethereumwallet</string>
+    <string name="title_home">Wallet</string>
+    <string name="title_dashboard">Chart</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
