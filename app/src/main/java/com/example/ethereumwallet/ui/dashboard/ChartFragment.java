@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.ethereumwallet.databinding.FragmentChartBinding;
 import com.example.ethereumwallet.R;
 
@@ -22,6 +24,7 @@ public class ChartFragment extends Fragment implements ChartContract.View{
 
     private FragmentChartBinding binding;
     private ChartContract.Presenter mPresenter;
+    private RequestQueue queue;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,16 +33,8 @@ public class ChartFragment extends Fragment implements ChartContract.View{
         mPresenter.start();
         binding = FragmentChartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        WebView mWebView = (WebView) root.findViewById(R.id.chartWebView);
-        mWebView.loadUrl("https://coinmarketcap.com/currencies/ethereum/");
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(request.getUrl().toString());
-                return false;
-            }
-        });
-
+        queue = Volley.newRequestQueue(this.getActivity());
+        mPresenter.setQueue(queue);
         return root;
     }
 
