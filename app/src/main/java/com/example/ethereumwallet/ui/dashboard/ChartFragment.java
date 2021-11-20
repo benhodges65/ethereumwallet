@@ -25,6 +25,7 @@ public class ChartFragment extends Fragment implements ChartContract.View{
     private FragmentChartBinding binding;
     private ChartContract.Presenter mPresenter;
     private RequestQueue queue;
+    private TextView mPrice;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +36,8 @@ public class ChartFragment extends Fragment implements ChartContract.View{
         View root = binding.getRoot();
         queue = Volley.newRequestQueue(this.getActivity());
         mPresenter.setQueue(queue);
+        mPrice = root.findViewById(R.id.price);
+        mPresenter.sendCurrentPressed();
         return root;
     }
 
@@ -48,4 +51,10 @@ public class ChartFragment extends Fragment implements ChartContract.View{
     public void setPresenter(ChartContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
+    @Override
+    public void populatePrice(String price) {
+        mPrice.setText(price);
+    }
+
 }

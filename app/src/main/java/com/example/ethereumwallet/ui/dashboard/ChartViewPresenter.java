@@ -38,19 +38,15 @@ public class ChartViewPresenter implements ChartContract.Presenter{
 
     @Override
     public void sendCurrentPressed() {
-        String url = "https://reqres.in/api/users?page=2";
+        String url = "https://api.coinbase.com/v2/prices/BTC-USD/spot?date=2020-10-21";
         List<String> jsonResponses = new ArrayList<>();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray jsonArray = response.getJSONArray("data");
-                    for(int i = 0; i < jsonArray.length(); i++){
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String email = jsonObject.getString("email");
-
-                        jsonResponses.add(email);
-                    }
+                    JSONObject jsonObject = response.getJSONObject("data");
+                    String email = jsonObject.getString("amount");
+                    mView.populatePrice(email);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -60,30 +56,8 @@ public class ChartViewPresenter implements ChartContract.Presenter{
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        }){
-            @Override
-            public Map<String, String> getHeaders() {
-                // in this method passing headers as
-                // key along with value as API keys.
-                HashMap<String, String> headers = new HashMap<>();
-                String secret = "gFPGKUgGj1zYb2iWplzljRTaZz1j5sK4";
-                String key = "zQmNh0Wmu5bdOH1Y";
-                headers.put("CB-ACCESS-KEY", key);
-                headers.put("CB-ACCESS-SIGN", encode(secret, String.valueOf(System.currentTimeMillis()/1000) + ""));
-
-                // at last returning headers
-                return headers;
-            }
-        };
-
+        });
         queue.add(jsonObjectRequest);
-    }
-
-    public static String encode(String key, String data) throws Exception {
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secret_key = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256");
-        sha256_HMAC.init(secret_key);
-        return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes("UTF-8")));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.android.volley.RequestQueue;
 public interface ChartContract {
     interface View{
         public void setPresenter(Presenter presenter);
+        public void populatePrice(String price);
     }
     interface Presenter{
         public void setView(View view);
