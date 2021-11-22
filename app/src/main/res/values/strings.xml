@@ -3,4 +3,7 @@
     <string name="title_home">Wallet</string>
     <string name="title_dashboard">Chart</string>
     <string name="title_notifications">Notifications</string>
+    <string name="Weekly">W</string>
+    <string name="Monthly">M</string>
+    <string name="Yearly">Y</string>
 </resources>

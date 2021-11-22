@@ -1,30 +1,33 @@
 package com.example.ethereumwallet.ui.dashboard;
 
+import android.util.Log;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import com.example.ethereumwallet.MainActivity;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Hex;
 
 public class ChartViewPresenter implements ChartContract.Presenter{
     private ChartContract.View mView;
     private RequestQueue queue;
+    private String currentPrice;
+    private ArrayList<String> weekPrice;
+    private ArrayList<String> weekDates;
+    private ArrayList<String> monthPrice;
+    private ArrayList<String> monthDates;
+    private ArrayList<String> yearDates;
+    private ArrayList<String> yearPrice;
+
 
     @Override
     public void setView(ChartContract.View view) {
@@ -38,15 +41,19 @@ public class ChartViewPresenter implements ChartContract.Presenter{
 
     @Override
     public void sendCurrentPressed() {
-        String url = "https://api.coinbase.com/v2/prices/BTC-USD/spot?date=2020-10-21";
+        PopulateDates();
+        weekPrice = new ArrayList<String>();
+        monthPrice = new ArrayList<String>();
+        yearPrice = new ArrayList<String>();
+        String url = "https://api.coinbase.com/v2/prices/ETH-USD/spot";
         List<String> jsonResponses = new ArrayList<>();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject jsonObject = response.getJSONObject("data");
-                    String email = jsonObject.getString("amount");
-                    mView.populatePrice(email);
+                    String amount = jsonObject.getString("amount");
+                    mView.populatePrice(amount);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -58,11 +65,113 @@ public class ChartViewPresenter implements ChartContract.Presenter{
             }
         });
         queue.add(jsonObjectRequest);
+        for(int i = 0; i < weekDates.size(); i++){
+            url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + weekDates.get(i);
+            jsonResponses = new ArrayList<>();
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject("data");
+                        String amount = jsonObject.getString("amount");
+                        weekPrice.add(amount);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            queue.add(jsonObjectRequest);
+        }
+        for(int i = 0; i < monthDates.size(); i++){
+            url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + monthDates.get(i);
+            jsonResponses = new ArrayList<>();
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject("data");
+                        String amount = jsonObject.getString("amount");
+                        monthPrice.add(amount);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            queue.add(jsonObjectRequest);
+        }
+        for(int i = 0; i < yearDates.size(); i++){
+            url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + yearDates.get(i);
+            jsonResponses = new ArrayList<>();
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject("data");
+                        String amount = jsonObject.getString("amount");
+                        yearPrice.add(amount);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            queue.add(jsonObjectRequest);
+        }
+    }
+
+    public void PopulateDates()
+    {
+        weekDates = new ArrayList<String>();
+        monthDates = new ArrayList<String>();
+        yearDates = new ArrayList<String>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentTime = Calendar.getInstance().getTime();
+        Calendar calendar = Calendar.getInstance();
+        for(int i = -6; i <= 0; i++){
+            calendar.setTime(currentTime);
+            calendar.add(calendar.DAY_OF_YEAR, i);
+            Date tempDate = calendar.getTime();
+            String date = dateFormat.format(tempDate);
+            weekDates.add(date);
+        }
+        for(int i = -30; i <= 0; i++){
+            calendar.setTime(currentTime);
+            calendar.add(calendar.DAY_OF_YEAR, i);
+            Date tempDate = calendar.getTime();
+            String date = dateFormat.format(tempDate);
+            monthDates.add(date);
+        }
+        for(int i = -12; i <= 0; i++){
+            calendar.setTime(currentTime);
+            calendar.add(calendar.MONTH, i);
+            Date tempDate = calendar.getTime();
+            String date = dateFormat.format(tempDate);
+            yearDates.add(date);
+        }
     }
 
     @Override
     public void setQueue(RequestQueue queue) {
         this.queue = queue;
+    }
+
+    @Override
+    public void sendWeeklyPressed() {
+
     }
 
 }

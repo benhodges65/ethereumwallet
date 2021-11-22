@@ -7,10 +7,57 @@
     tools:context=".ui.dashboard.ChartFragment">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/currentPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
         android:text="TextView"
-        tools:layout_editor_absoluteX="204dp"
-        tools:layout_editor_absoluteY="503dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartBox"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/currentPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/chartBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioWeekly"
+            android:layout_width="wrap_content"
+            android:text="@string/Weekly"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/radioMonthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Monthly" />
+        <RadioButton
+            android:id="@+id/radioYearly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Yearly"/>
+    </RadioGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

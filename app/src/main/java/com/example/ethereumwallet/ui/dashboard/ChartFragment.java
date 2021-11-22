@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.ethereumwallet.databinding.FragmentChartBinding;
 import com.example.ethereumwallet.R;
+import com.github.mikephil.charting.charts.LineChart;
+
+import java.util.ArrayList;
 
 public class ChartFragment extends Fragment implements ChartContract.View{
 
@@ -26,6 +31,7 @@ public class ChartFragment extends Fragment implements ChartContract.View{
     private ChartContract.Presenter mPresenter;
     private RequestQueue queue;
     private TextView mPrice;
+    private LineChart chart;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -36,8 +42,32 @@ public class ChartFragment extends Fragment implements ChartContract.View{
         View root = binding.getRoot();
         queue = Volley.newRequestQueue(this.getActivity());
         mPresenter.setQueue(queue);
-        mPrice = root.findViewById(R.id.price);
+        mPrice = root.findViewById(R.id.currentPrice);
         mPresenter.sendCurrentPressed();
+        chart = root.findViewById(R.id.chartBox);
+        RadioButton weeklyView = root.findViewById(R.id.radioWeekly);
+        RadioButton monthlyView = root.findViewById(R.id.radioWeekly);
+        RadioButton yearlyView = root.findViewById(R.id.radioWeekly);
+        RadioGroup radioGroup = root.findViewById(R.id.radioGroup);
+        radioGroup.check(R.id.radioWeekly);
+        weeklyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        monthlyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        yearlyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         return root;
     }
 
@@ -55,6 +85,10 @@ public class ChartFragment extends Fragment implements ChartContract.View{
     @Override
     public void populatePrice(String price) {
         mPrice.setText(price);
+    }
+
+    @Override
+    public void buildChart(ArrayList<String> dates, ArrayList<String> prices) {
     }
 
 }
