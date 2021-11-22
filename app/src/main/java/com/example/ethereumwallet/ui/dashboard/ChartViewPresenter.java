@@ -11,6 +11,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,10 +24,13 @@ public class ChartViewPresenter implements ChartContract.Presenter{
     private String currentPrice;
     private ArrayList<String> weekPrice;
     private ArrayList<String> weekDates;
+    private ArrayList<Float> weekTimes;
     private ArrayList<String> monthPrice;
     private ArrayList<String> monthDates;
     private ArrayList<String> yearDates;
     private ArrayList<String> yearPrice;
+    private ArrayList<Float> monthTimes;
+    private ArrayList<Float> yearTimes;
 
 
     @Override
@@ -45,6 +49,7 @@ public class ChartViewPresenter implements ChartContract.Presenter{
         weekPrice = new ArrayList<String>();
         monthPrice = new ArrayList<String>();
         yearPrice = new ArrayList<String>();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String url = "https://api.coinbase.com/v2/prices/ETH-USD/spot";
         List<String> jsonResponses = new ArrayList<>();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -68,14 +73,21 @@ public class ChartViewPresenter implements ChartContract.Presenter{
         for(int i = 0; i < weekDates.size(); i++){
             url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + weekDates.get(i);
             jsonResponses = new ArrayList<>();
+            int finalI = i;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
                         JSONObject jsonObject = response.getJSONObject("data");
                         String amount = jsonObject.getString("amount");
+                        Date date = df.parse(weekDates.get(finalI));
+                        long epoch = date.getTime();
+                        weekTimes.add((float)epoch);
                         weekPrice.add(amount);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    catch (ParseException e){
                         e.printStackTrace();
                     }
                 }
@@ -90,14 +102,21 @@ public class ChartViewPresenter implements ChartContract.Presenter{
         for(int i = 0; i < monthDates.size(); i++){
             url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + monthDates.get(i);
             jsonResponses = new ArrayList<>();
+            int finalI = i;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
                         JSONObject jsonObject = response.getJSONObject("data");
                         String amount = jsonObject.getString("amount");
+                        Date date = df.parse(monthDates.get(finalI));
+                        long epoch = date.getTime();
+                        monthTimes.add((float)epoch);
                         monthPrice.add(amount);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    catch (ParseException e){
                         e.printStackTrace();
                     }
                 }
@@ -112,14 +131,21 @@ public class ChartViewPresenter implements ChartContract.Presenter{
         for(int i = 0; i < yearDates.size(); i++){
             url = "https://api.coinbase.com/v2/prices/ETH-USD/spot?date=" + yearDates.get(i);
             jsonResponses = new ArrayList<>();
+            int finalI = i;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
                         JSONObject jsonObject = response.getJSONObject("data");
                         String amount = jsonObject.getString("amount");
+                        Date date = df.parse(yearDates.get(finalI));
+                        long epoch = date.getTime();
+                        yearTimes.add((float)epoch);
                         yearPrice.add(amount);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    catch (ParseException e){
                         e.printStackTrace();
                     }
                 }
@@ -135,6 +161,9 @@ public class ChartViewPresenter implements ChartContract.Presenter{
 
     public void PopulateDates()
     {
+        yearTimes = new ArrayList<Float>();
+        monthTimes = new ArrayList<Float>();
+        weekTimes = new ArrayList<Float>();
         weekDates = new ArrayList<String>();
         monthDates = new ArrayList<String>();
         yearDates = new ArrayList<String>();
@@ -155,7 +184,7 @@ public class ChartViewPresenter implements ChartContract.Presenter{
             String date = dateFormat.format(tempDate);
             monthDates.add(date);
         }
-        for(int i = -12; i <= 0; i++){
+        for(int i = -11; i <= 0; i++){
             calendar.setTime(currentTime);
             calendar.add(calendar.MONTH, i);
             Date tempDate = calendar.getTime();
@@ -171,7 +200,17 @@ public class ChartViewPresenter implements ChartContract.Presenter{
 
     @Override
     public void sendWeeklyPressed() {
+        mView.buildChart(weekTimes,weekPrice);
+    }
 
+    @Override
+    public void sendMonthlyPressed() {
+        mView.buildChart(monthTimes,monthPrice);
+    }
+
+    @Override
+    public void sendYearlyPressed() {
+        mView.buildChart(yearTimes,yearPrice);
     }
 
 }

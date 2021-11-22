@@ -1,6 +1,8 @@
 package com.example.ethereumwallet.ui.dashboard;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,11 @@ import com.android.volley.toolbox.Volley;
 import com.example.ethereumwallet.databinding.FragmentChartBinding;
 import com.example.ethereumwallet.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 
@@ -46,26 +53,26 @@ public class ChartFragment extends Fragment implements ChartContract.View{
         mPresenter.sendCurrentPressed();
         chart = root.findViewById(R.id.chartBox);
         RadioButton weeklyView = root.findViewById(R.id.radioWeekly);
-        RadioButton monthlyView = root.findViewById(R.id.radioWeekly);
-        RadioButton yearlyView = root.findViewById(R.id.radioWeekly);
+        RadioButton monthlyView = root.findViewById(R.id.radioMonthly);
+        RadioButton yearlyView = root.findViewById(R.id.radioYearly);
         RadioGroup radioGroup = root.findViewById(R.id.radioGroup);
         radioGroup.check(R.id.radioWeekly);
         weeklyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mPresenter.sendWeeklyPressed();
             }
         });
         monthlyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mPresenter.sendMonthlyPressed();
             }
         });
         yearlyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mPresenter.sendYearlyPressed();
             }
         });
         return root;
@@ -88,7 +95,20 @@ public class ChartFragment extends Fragment implements ChartContract.View{
     }
 
     @Override
-    public void buildChart(ArrayList<String> dates, ArrayList<String> prices) {
+    public void buildChart(ArrayList<Float> dates, ArrayList<String> prices) {
+        ArrayList<Entry> lineEntries = new ArrayList<Entry>();
+        for(int i = 0; i < prices.size(); i++) {
+            lineEntries.add(new Entry(dates.get(i), Float.valueOf(prices.get(i))));
+            Log.d("VALUES", dates.get(i) + " " + prices.get(i));
+        }
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Ethereum Price");
+        LineData lineData = new LineData(lineDataSet);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+        xAxis.setLabelCount(prices.size(), true);
+        chart.setData(lineData);
+        chart.invalidate();
+        Log.d("TEST", "buildChart: ");
     }
 
 }
