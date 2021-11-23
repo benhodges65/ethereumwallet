@@ -200,17 +200,68 @@ public class ChartViewPresenter implements ChartContract.Presenter{
 
     @Override
     public void sendWeeklyPressed() {
+        arrayListSort();
         mView.buildChart(weekTimes,weekPrice);
     }
 
     @Override
     public void sendMonthlyPressed() {
+        arrayListSort();
         mView.buildChart(monthTimes,monthPrice);
     }
 
     @Override
     public void sendYearlyPressed() {
+        arrayListSort();
         mView.buildChart(yearTimes,yearPrice);
+    }
+
+    public void arrayListSort() {
+        for (int i=0; i<weekTimes.size()-1; i++) {
+            for (int j=i+1; j<weekTimes.size(); j++) {
+                if (weekTimes.get(i) > weekTimes.get(j)) {
+                    //... Exchange elements in first array
+                    Float temp = weekTimes.get(i);
+                    weekTimes.set(i, weekTimes.get(j));
+                    weekTimes.set(j, temp);
+
+                    //... Exchange elements in second array
+                    String temp2 = weekPrice.get(i);
+                    weekPrice.set(i, weekPrice.get(j));
+                    weekPrice.set(j, temp2);
+                }
+            }
+        }
+        for (int i=0; i<monthTimes.size()-1; i++) {
+            for (int j=i+1; j<monthTimes.size(); j++) {
+                if (monthTimes.get(i) > monthTimes.get(j)) {
+                    //... Exchange elements in first array
+                    Float temp = monthTimes.get(i);
+                    monthTimes.set(i, monthTimes.get(j));
+                    monthTimes.set(j, temp);
+
+                    //... Exchange elements in second array
+                    String temp2 = monthPrice.get(i);
+                    monthPrice.set(i, monthPrice.get(j));
+                    monthPrice.set(j, temp2);
+                }
+            }
+        }
+        for (int i=0; i<yearTimes.size()-1; i++) {
+            for (int j=i+1; j<yearTimes.size(); j++) {
+                if (yearTimes.get(i) > yearTimes.get(j)) {
+                    //... Exchange elements in first array
+                    Float temp = yearTimes.get(i);
+                    yearTimes.set(i, yearTimes.get(j));
+                    yearTimes.set(j, temp);
+
+                    //... Exchange elements in second array
+                    String temp2 = yearPrice.get(i);
+                    yearPrice.set(i, yearPrice.get(j));
+                    yearPrice.set(j, temp2);
+                }
+            }
+        }
     }
 
 }

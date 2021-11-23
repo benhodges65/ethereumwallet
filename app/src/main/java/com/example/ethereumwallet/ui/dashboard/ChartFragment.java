@@ -99,16 +99,18 @@ public class ChartFragment extends Fragment implements ChartContract.View{
         ArrayList<Entry> lineEntries = new ArrayList<Entry>();
         for(int i = 0; i < prices.size(); i++) {
             lineEntries.add(new Entry(dates.get(i), Float.valueOf(prices.get(i))));
-            Log.d("VALUES", dates.get(i) + " " + prices.get(i));
         }
         LineDataSet lineDataSet = new LineDataSet(lineEntries, "Ethereum Price");
         LineData lineData = new LineData(lineDataSet);
         XAxis xAxis = chart.getXAxis();
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
-        xAxis.setLabelCount(prices.size(), true);
+        if(prices.size() == 7){
+            xAxis.setLabelCount(prices.size(), true);
+        }
+        else
+            xAxis.setLabelCount(12, true);
         chart.setData(lineData);
         chart.invalidate();
-        Log.d("TEST", "buildChart: ");
     }
 
 }
